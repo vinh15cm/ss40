@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Cầu Thủ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        #playerList {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Quản lý Cầu Thủ</h1>
+
+    <label for="playerName">Tên Cầu Thủ:</label>
+    <input type="text" id="playerName" onkeyup="checkEnterToAdd(event)">
+    <button onclick="addPlayer()">Thêm Cầu Thủ</button>
+
+    <div id="playerList"></div>
+
+    <h2>Xóa Cầu Thủ</h2>
+    <label for="playerIdToDelete">ID Cầu Thủ:</label>
+    <input type="text" id="playerIdToDelete">
+    <button onclick="deletePlayer()">Xóa Cầu Thủ</button>
+
+    <script>
+        function addPlayer() {
+            var playerName = document.getElementById('playerName').value;
+
+            if (playerName) {
+
+                var playerId = generateId();
+
+                var playerList = JSON.parse(localStorage.getItem('playerList')) || {};
+
+                playerList[playerId] = playerName;
+
+                localStorage.setItem('playerList', JSON.stringify(playerList));
+
+                displayPlayers();
+
+                document.getElementById('playerName').value = '';
+                document.getElementById('playerName').focus();
+            } else {
+                alert("Vui lòng nhập tên cầu thủ!");
+            }
+        }
+
+        function displayPlayers() {
+            var playerList = JSON.parse(localStorage.getItem('playerList')) || {};
+            var playerListContainer = document.getElementById('playerList');
+            playerListContainer.innerHTML = '<h2>Danh Sách Cầu Thủ:</h2>';
+
+            for (var playerId in playerList) {
+                playerListContainer.innerHTML += `<p><strong>ID:</strong> ${playerId}, <strong>Tên Cầu Thủ:</strong> ${playerList[playerId]}</p>`;
+            }
+        }
+
+        function generateId() {
+            return Math.floor(Math.random() * 1000000);
+        }
+
+        function checkEnterToAdd(event) {
+            if (event.keyCode === 13) {
+                addPlayer();
+            }
+        }
+
+        function deletePlayer() {
+            var playerIdToDelete = document.getElementById('playerIdToDelete').value;
+
+            if (playerIdToDelete) {
+
+                var playerList = JSON.parse(localStorage.getItem('playerList')) || {};
+
+                if (playerList.hasOwnProperty(playerIdToDelete)) {
+
+                    delete playerList[playerIdToDelete];
+
+                    localStorage.setItem('playerList', JSON.stringify(playerList));
+
+                    displayPlayers();
+                } else {
+                    alert("Không tìm thấy cầu thủ có ID: " + playerIdToDelete);
+                }
+
+                document.getElementById('playerIdToDelete').value = '';
+            } else {
+                alert("Vui lòng nhập ID cầu thủ cần xóa!");
+            }
+        }
+        window.onload = function () {
+            displayPlayers();
+
+            document.getElementById('playerName').focus();
+        };
+    </script>
+
+</body>
+
+</html>

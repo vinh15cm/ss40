@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Cầu Thủ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        #playerList {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Quản lý Cầu Thủ</h1>
+
+    <label for="playerName"></label>
+    <input type="text" id="playerName" placeholder="Nhập tên cầu thủ" onkeyup="checkEnter(event)" />
+    <button onclick="addPlayer()">Thêm Cầu Thủ</button>
+
+    <div id="playerList"></div>
+
+    <script>
+        // Hàm thêm cầu thủ vào local storage
+        function addPlayer() {
+            var playerName = document.getElementById('playerName').value;
+
+            if (playerName) {
+                var playerId = generateId();
+                var playerList = JSON.parse(localStorage.getItem('playerList')) || {};
+
+                playerList[playerId] = playerName;
+
+                localStorage.setItem('playerList', JSON.stringify(playerList));
+
+                displayPlayers();
+            } else {
+                alert("Vui lòng nhập tên cầu thủ!");
+            }
+        }
+
+        // Hàm hiển thị danh sách cầu thủ từ local storage
+        function displayPlayers() {
+            var playerList = JSON.parse(localStorage.getItem('playerList')) || {};
+            var playerListContainer = document.getElementById('playerList');
+            playerListContainer.innerHTML = '<h2>Danh Sách Cầu Thủ:</h2>';
+
+            // Hiển thị từng cầu thủ trong danh sách
+            for (var playerId in playerList) {
+                playerListContainer.innerHTML += `<p><strong>ID:</strong> ${playerId}, <strong>Tên Cầu Thủ:</strong> ${playerList[playerId]}</p>`;
+            }
+        }
+
+        function generateId() {
+            return Math.floor(Math.random() * 1000000);
+        }
+
+        function checkEnter(event) {
+            if (event.keyCode === 13) {
+                addPlayer();
+            }
+        }
+
+        window.onload = function () {
+            displayPlayers();
+        };
+
+        document.getElementById('playerName').focus();
+    </script>
+
+</body>
+
+</html>
